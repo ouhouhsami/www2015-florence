@@ -93,7 +93,6 @@
                 <li>Web Audio Conference "WAC"</li>
                 <li>Web Audio API vs. Native: Closing the Gap</li>
                 <li>Ircam Web Audio Softwares</li>
-                <li>What's next?</li>
             </ol>
 
         </div>
@@ -331,7 +330,7 @@ drumsLoop2MediaElementSource.connect(gainNode)
 gainNode.connect(audioContext.destination)
 
 gainSlider.oninput = function(evt){
-    gainNode.gain.value = evt.target.value
+    gainNode.gain.value = parseFloat(evt.target.value);
 }</code></pre>
     </section>
 
@@ -373,19 +372,19 @@ drumsLoop3MediaElementSource.connect(filterNode)
 filterNode.connect(audioContext.destination)
 
 biquadFilterFrequencySlider.oninput = function(evt){
-    filterNode.frequency.value = evt.target.value
+    filterNode.frequency.value = parseFloat(evt.target.value);
 }
 
 biquadFilterDetuneSlider.oninput = function(evt){
-    filterNode.detune.value = evt.target.value
+    filterNode.detune.value = parseFloat(evt.target.value);
 }
 
 biquadFilterQSlider.oninput = function(evt){
-    filterNode.Q.value = evt.target.value
+    filterNode.Q.value = parseFloat(evt.target.value);
 }
 
 biquadFilterGainSlider.oninput = function(evt){
-    filterNode.gain.value = evt.target.value
+    filterNode.gain.value = parseFloat(evt.target.value);
 }
 
 biquadFilterTypeSelector.onchange = function(evt){
@@ -409,7 +408,7 @@ guitarChunkMediaElementSource.connect(audioContext.destination)
 delayNode.connect(audioContext.destination)
 
 delayNodeDelaySlider.oninput = function(evt){
-    delayNode.delayTime.value = evt.target.value;
+    delayNode.delayTime.value = parseFloat(evt.target.value);
 }</code></pre>
     </section>
 
@@ -448,13 +447,13 @@ guitarMonoMediaElementSource.connect(pannerNode);
 pannerNode.connect(audioContext.destination);
 
 pannerNodeXSlider.oninput = function(evt){
-    pannerNode.setPosition(evt.target.value, yPanner, zPanner);
+    pannerNode.setPosition(parseFloat(evt.target.value), yPanner, zPanner);
 }
 pannerNodeYSlider.oninput = function(evt){
-    pannerNode.setPosition(xPanner, evt.target.value, zPanner);
+    pannerNode.setPosition(xPanner, parseFloat(evt.target.value), zPanner);
 }
 pannerNodeZSlider.oninput = function(evt){
-    pannerNode.setPosition(xPanner, yPanner, evt.target.value);
+    pannerNode.setPosition(xPanner, yPanner, parseFloat(evt.target.value));
 }</code></pre>
     </section>
 
@@ -552,11 +551,11 @@ gainRNode.connect(channelMergerNode, 0, 1)
 channelMergerNode.connect(audioContext.destination)
 
 leftGainSlider.oninput = function(evt){
-    gainLNode.gain.value = evt.target.value
+    gainLNode.gain.value = parseFloat(evt.target.value);
 }
 
 rightGainSlider.oninput = function(evt){
-    gainRNode.gain.value = evt.target.value
+    gainRNode.gain.value = parseFloat(evt.target.value);
 }</code></pre>
     </section>
 
@@ -596,22 +595,22 @@ guitarCompressorMediaElementSource.connect(dynamicCompressorNode);
 dynamicCompressorNode.connect(audioContext.destination);
 
 thresholdCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.threshold.value = evt.target.value
+    dynamicCompressorNode.threshold.value = parseFloat(evt.target.value);
 }
 kneeCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.knee.value = evt.target.value
+    dynamicCompressorNode.knee.value = parseFloat(evt.target.value);
 }
 ratioCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.ratio.value = evt.target.value
+    dynamicCompressorNode.ratio.value = parseFloat(evt.target.value);
 }
 reductionCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.reduction.value = evt.target.value
+    dynamicCompressorNode.reduction.value = parseFloat(evt.target.value);
 }
 attackCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.attack.value = evt.target.value
+    dynamicCompressorNode.attack.value = parseFloat(evt.target.value);
 }
 releaseCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.release.value = evt.target.value
+    dynamicCompressorNode.release.value = parseFloat(evt.target.value);
 }</code></pre>
     </section>
 
@@ -678,7 +677,7 @@ startOscillator.onclick = function(evt){
     oscillator.start();
 }
 frequencyOscillatorSlider.oninput = function(evt){
-    oscillator.frequency.value = evt.target.value;
+    oscillator.frequency.value = parseFloat(evt.target.value);
 }</code></pre>
     </section>
 
@@ -831,13 +830,13 @@ startADSROscillator.onclick = function(evt) {
         </p>
             <ol>
                 <li>
-                    With <b>AudioWorker</b>: no more copy of buffers between threads
+                    With <b>AudioWorker</b>: no more thread boundaries to cross as Audio and JavaScript are on the same thread
                 </li>
                 <li>
-                    Use <a href="http://asmjs.org/">asm.js</a>: no garbage collection (because no malloc)
+                    Use <a href="http://asmjs.org/">asm.js</a> as it doesn't produce temporary objects to be garbage collected.
                 </li>
                 <li>
-                    Use <a href="https://hacks.mozilla.org/2014/10/introducing-simd-js/">SIMD.js</a>
+                    Use <a href="https://hacks.mozilla.org/2014/10/introducing-simd-js/">SIMD.js</a>. SIMD (Single Instruction Multiple Data) allows to perform operations on multiple data elements together which is particularly interesting in term of performance in the case of audio buffer data processing.
                 </li>
             </ol>
         <p>

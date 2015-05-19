@@ -178,19 +178,19 @@ drumsLoop3MediaElementSource.connect(filterNode)
 filterNode.connect(audioContext.destination)
 
 biquadFilterFrequencySlider.oninput = function(evt){
-    filterNode.frequency.value = evt.target.value
+    filterNode.frequency.value = parseFloat(evt.target.value);
 }
 
 biquadFilterDetuneSlider.oninput = function(evt){
-    filterNode.detune.value = evt.target.value
+    filterNode.detune.value = parseFloat(evt.target.value);
 }
 
 biquadFilterQSlider.oninput = function(evt){
-    filterNode.Q.value = evt.target.value
+    filterNode.Q.value = parseFloat(evt.target.value);
 }
 
 biquadFilterGainSlider.oninput = function(evt){
-    filterNode.gain.value = evt.target.value
+    filterNode.gain.value = parseFloat(evt.target.value);
 }
 
 biquadFilterTypeSelector.onchange = function(evt){
@@ -210,7 +210,7 @@ guitarChunkMediaElementSource.connect(audioContext.destination)
 delayNode.connect(audioContext.destination)
 
 delayNodeDelaySlider.oninput = function(evt){
-    delayNode.delayTime.value = evt.target.value;
+    delayNode.delayTime.value = parseFloat(evt.target.value);
 }
 
 /* PannerNode */
@@ -239,13 +239,13 @@ guitarMonoMediaElementSource.connect(pannerNode);
 pannerNode.connect(audioContext.destination);
 
 pannerNodeXSlider.oninput = function(evt){
-    pannerNode.setPosition(evt.target.value, yPanner, zPanner);
+    pannerNode.setPosition(parseFloat(evt.target.value), yPanner, zPanner);
 }
 pannerNodeYSlider.oninput = function(evt){
-    pannerNode.setPosition(xPanner, evt.target.value, zPanner);
+    pannerNode.setPosition(xPanner, parseFloat(evt.target.value), zPanner);
 }
 pannerNodeZSlider.oninput = function(evt){
-    pannerNode.setPosition(xPanner, yPanner, evt.target.value);
+    pannerNode.setPosition(xPanner, yPanner, parseFloat(evt.target.value));
 }
 
 /* ConvolverNode */
@@ -325,11 +325,11 @@ gainRNode.connect(channelMergerNode, 0, 1)
 channelMergerNode.connect(audioContext.destination)
 
 leftGainSlider.oninput = function(evt){
-    gainLNode.gain.value = evt.target.value
+    gainLNode.gain.value = parseFloat(evt.target.value);
 }
 
 rightGainSlider.oninput = function(evt){
-    gainRNode.gain.value = evt.target.value
+    gainRNode.gain.value = parseFloat(evt.target.value);
 }
 
 /* DynamicsCompressorNode */
@@ -349,22 +349,22 @@ guitarCompressorMediaElementSource.connect(dynamicCompressorNode);
 dynamicCompressorNode.connect(audioContext.destination);
 
 thresholdCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.threshold.value = evt.target.value
+    dynamicCompressorNode.threshold.value = parseFloat(evt.target.value);
 }
 kneeCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.knee.value = evt.target.value
+    dynamicCompressorNode.knee.value = parseFloat(evt.target.value);
 }
 ratioCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.ratio.value = evt.target.value
+    dynamicCompressorNode.ratio.value = parseFloat(evt.target.value);
 }
 reductionCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.reduction.value = evt.target.value
+    dynamicCompressorNode.reduction.value = parseFloat(evt.target.value);
 }
 attackCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.attack.value = evt.target.value
+    dynamicCompressorNode.attack.value = parseFloat(evt.target.value);
 }
 releaseCompressorSlider.oninput = function(evt){
-    dynamicCompressorNode.release.value = evt.target.value
+    dynamicCompressorNode.release.value = parseFloat(evt.target.value);
 }
 
 /* WaveShaperNode */
@@ -418,7 +418,7 @@ startOscillator.onclick = function(evt){
     oscillator.start();
 }
 frequencyOscillatorSlider.oninput = function(evt){
-    oscillator.frequency.value = evt.target.value;
+    oscillator.frequency.value = parseFloat(evt.target.value);
 }
 
 
