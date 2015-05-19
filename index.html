@@ -1,0 +1,989 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>What is Web Audio? - WWW2015, Florence, Italy - May 20, 2015</title>
+  <meta name="author" content="Samuel Goldszmidt">
+  <link rel="stylesheet" type="text/css" href="./media/css/default-typo.css">
+  <link rel="stylesheet" type="text/css" href="./media/css/style.css">
+  <script type="application/javascript;version=1.7" src="./vendor/peer.js"></script>
+  <link rel="stylesheet" href="./vendor/highlight/styles/monokai_sublime.css">
+  <script src="./vendor/highlight/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+    <section>
+
+        <h1>What is Web Audio?</h1>
+        <h5>W3C Track: Web Audio</h5>
+        <div>May 20, 2015 - Florence, Italy</div>
+        <div>Samuel Goldszmidt (<a href="https://twitter.com/ouhouhsami">@ouhouhsami</a>) - <a href="http://www.ircam.fr">Ircam</a></div>
+
+    </section>
+
+    <section>
+
+        <h2>Introduction</h2>
+
+        <div>
+            <blockquote>$ whoami: <b>Web developper</b> at <b>Ircam</b></blockquote>
+
+            <h5>Institut de Recherche et de Coordination Acoustique/Musique</h5>
+            <img src="./media/img/ircam.png" alt="Ircam building" height="200px" />
+            <img src="./media/img/ircam-anechoïque.png"  alt="Chambre anéchoïque © Sylvain Bonniol
+            " height="200px"/>
+            <ul>
+                <li>Founded in 1977 by Pierre Boulez, associated to Centre Pompidou
+                </li>
+                <li>
+                    Main funding: French Ministry of Culture and Communication
+                </li>
+                <li>
+                    Goal: a place that gathers musicians, scientists and engineers for their mutual benefit
+                    <ul>
+                        <li>renewing contemporary music expression through Science and Technology</li>
+                        <li>music creation as an singular and challenging research object</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                Ircam organization: Direction, Research and Development, Creation, Mediation
+            </p>
+        </section>
+        <section>
+            <h3>Web developer in R&D department</h3>
+            <ul>
+                <li>In charge of Ircam's web information and management systems <br>… using "minimal" web audio technologies, in fact &lt;audio&gt; and &lt;video&gt;</li>
+                <li>Member of <a href="http://apm.ircam.fr">Analysis of Musical Practises</a> team <br>… using audio in a web context since a decade, long before W3C Web Audio Working Group</li>
+            </ul>
+            <img src="./media/img/apm-experiments.png" alt="First APM experiments" height="300px" />
+            <br>
+            <a href="http://apm.ircam.fr/subproject/2/" target="_blank"><img src="./media/img/cera.png" alt="First APM experiments" height="200px" /></a>
+        </div>
+    </section>
+    <section>
+        <h3>Ircam @ W3C Track?</h3>
+        <div>
+
+            <blockquote>
+                - What brought Norbert Schnell and I there?
+                <br>
+                - Obviously, audio is one of Ircam's key research field.
+            </blockquote>
+
+            <div>
+                The browser <small>(well, one which respects standards)</small> is a unique platform shared by more than 3 billion users.
+                <br>
+                So, if we can deliver Ircam's computer music and interaction knowledge in the web platform, we will reach new fields of research, experiments and feedback.
+            </div>
+
+            <ul>
+                <li>We were enthusiastic about being able to use and contribute to audio capabilities in the browser</li>
+                <li>We submitted 2 research projects using Web Audio technologies: <a href="http://wave.ircam.fr">WAVE</a> (Web Audio Visualization/Edition) and <a href="http://cosima.ircam.fr">CoSiMa</a> (Collaborative Situated Media, leaded by Norbert Schnell)</li>
+                <li>We have organized with Mozilla the first Web Audio Conference "WAC" in January 2015</li>
+            </ul>
+
+            <h4>Outline</h4>
+
+            <ol>
+                <li>Short Web Audio history</li>
+                <li>Web Audio API</li>
+                <li>Web Audio Conference "WAC"</li>
+                <li>Ircam Web Audio Softwares</li>
+                <li>What's next?</li>
+            </ol>
+
+        </div>
+
+    </section>
+    <section>
+        <h2>Short Web Audio History</h2>
+        <blockquote>
+            - Where do we come from?
+            <br>
+            - Kids, it's been a long journey</blockquote>
+        <ul>
+            <li>~ 1995: &lt;bgsound&gt; &lt;applet&gt;</li>
+            <li>~ 1997: Flash</li>
+            <li>~ 2008: &lt;audio&gt; </li>
+            <li>~ 2010: Web Audio API, WebRTC (getUserMedia), WebSocket</li>
+        </ul>
+    </section>
+
+    <section>
+
+        <h2>Web Audio API? <small><a href="http://webaudio.github.io/web-audio-api/">(draft)</a></small></h2>
+
+        <blockquote>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Basic_concepts_behind_Web_Audio_API">Basic Concepts Behind Web Audio API</a> on MDN
+        </blockquote>
+        <ul>
+            <li>High-level JavaScript API for processing and synthesizing audio in web applications</li>
+            <li>The paradigm: audio routing graph which connects <b>AudioNodes</b> to define an audio rendering.</li>
+            <li>Underlying implementation in C / C++ code, but direct JavaScript processing and synthesis is supported</li>
+        </ul>
+
+
+        <div><b>Goals</b></div>
+        <ul>
+            <li> &lt;audio&gt; HTML5 element allows for basic streaming and audio playback, in recent browsers no more need to Flash and QuickTime.
+            </li>
+            <li> But not enough for games and interactive applications, like DAW (Digital Audio Workstations), audio plugin effects and synthesizers ...
+            </li>
+            <li>... and all we can imagine in a multimedia multi-user connected environment for music!</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Web Audio API - Key features</h3>
+
+        <ul>
+            <li>Sample accurate scheduled sound playback</li>
+            <li>Integration with &lt;audio&gt; and &lt;video&gt; media elements, getUserMedia(), WebRTC</li>
+            <li>Spatialized audio</li>
+            <li>Convolution engine</li>
+            <li>Filters, Waveshaping, Oscillator</li>
+            <li>AudioParameters</li>
+            <li>Time-domain and frequency analysis (for visualisation only at this time)</li>
+        </ul>
+
+        <blockquote>
+        Demo break proposed by Chris Wilson (Google Developer Advocate, Editor of Web Audio API and Web MIDI API):
+        <ul>
+            <li>
+                <a href="https://webaudiodemos.appspot.com/Vocoder/index.html#">Vocoder (Analysis, Filtering, Visualization)
+                </a>
+            </li>
+            <li>
+                <a href="http://webaudiodemos.appspot.com/midi-synth/index.html">Midi-synth (Synthesis, Filtering, Scheduling)</a>
+            </li>
+        </blockquote>
+    </section>
+    <section>
+        <h3>Web Audio API Overview</h3>
+
+        <h4>AudioContext</h4>
+
+        <p>Contains the audio signal graph (connections between audio nodes), the currentTime, the factories to create AudioNodes</p>
+        <pre><code class="js">
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+/* decodeAudioData */
+
+const snareDrumURL = './media/sd.wav';
+const bassDrumURL = './media/bd.wav';
+
+const bassDrumBt = document.querySelector("#bassDrumBt");
+const snareDrumBt = document.querySelector("#snareDrumBt");
+
+function loadSample(url){
+    return new Promise(function(resolve, reject){
+        fetch(url)
+        .then((response) => {
+            return response.arrayBuffer()
+        })
+        .then((buffer) =>{
+            audioContext.decodeAudioData(buffer, (decodedAudioData) =>{
+                resolve(decodedAudioData);
+            })
+        });
+    })
+};
+
+const samples = Promise.all([loadSample(bassDrumURL), loadSample(snareDrumURL)])
+.then(onSamplesDecoded);</code></pre>
+    </section>
+
+    <section>
+        <h4>AudioNodes</h4>
+
+        <h5>AudioBufferSourceNode</h5>
+        <button id="bassDrumBt">BD</button>
+        <button id="snareDrumBt">SD</button>
+<pre><code class="js">function playSample(buffer){
+    const bufferSource = audioContext.createBufferSource();
+    bufferSource.buffer = buffer;
+    bufferSource.connect(audioContext.destination);
+    bufferSource.start();
+}
+
+function onSamplesDecoded(buffers){
+    bassDrumBt.onclick = (evt) => {
+        playSample(buffers[0]);
+    }
+    snareDrumBt.onclick = (evt) => {
+        playSample(buffers[1]);
+    }
+}</code></pre>
+</section>
+<section>
+        <h5>MediaElementAudioSourceNode</h5>
+        <audio src="./media/guitar.mp3" id="guitarRiff" controls loop></audio>
+        <pre><code class="js">const guitarRiff = document.querySelector('#guitarRiff');
+const guitarMediaElementSource = audioContext.createMediaElementSource(guitarRiff);
+
+guitarMediaElementSource.connect(audioContext.destination)
+</code></pre>
+    </section>
+
+    <section>
+        <h5>MediaStreamAudioSourceNode</h5>
+        <label><input type="checkbox" id="liveAudioInputBt">Enable/Disable live audio input</label>
+        <pre><code class="js">let localStream;
+const liveAudioInputBt = document.querySelector("#liveAudioInputBt");
+
+liveAudioInputBt.onclick = function(evt){
+    if (evt.target.checked) {
+        navigator.getUserMedia({audio: true}, (stream) => {
+            localStream = stream;
+            const streamSource = audioContext.createMediaStreamSource(localStream);
+            streamSource.connect(audioContext.destination);
+        },
+        function(err){console.log(err)});
+    } else {
+        localStream.stop();
+    }
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>MediaStreamAudioDestinationNode</h5>
+        <label><input type="checkbox" id="liveAudioOutputBt">Enable/Disable live audio ouput</label>
+        <pre><code class="js">const liveAudioOutputBt = document.querySelector("#liveAudioOutputBt");
+
+liveAudioOutputBt.onclick = function(evt){
+    if(evt.target.checked){
+        var dest = audioContext.createMediaStreamDestination();
+        guitarMediaElementSource.connect(dest);
+        // Connect to peer to send stream
+        var peer = new Peer('stream-gtr', {key: 'ubgje3sm5p0evcxr',
+            debug: 3,
+            logFunction: function() {
+                var copy = Array.prototype.slice.call(arguments).join(' ');
+            }
+        });
+        peer.on('call', function(call) {
+            call.answer(dest.stream);
+        });
+    }
+    else {
+        // Disconnect peer
+    }
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>ScriptProcessorNode</h5>
+        <audio src="./media/drums.mp3" id="drumsLoop" controls loop></audio>
+        <pre><code class="js">const drumsLoop = document.querySelector('#drumsLoop');
+
+const drumsLoopMediaElementSource = audioContext.createMediaElementSource(drumsLoop);
+const scriptNode = audioContext.createScriptProcessor(16384, 1, 1);
+drumsLoopMediaElementSource.connect(scriptNode)
+scriptNode.connect(audioContext.destination)
+
+scriptNode.bits = 8; // between 1 and 16
+scriptNode.normfreq = 0.05; // between 0.0 and 1.0
+
+let step = Math.pow(1/2, scriptNode.bits);
+let phaser = 0;
+let last = 0;
+
+
+scriptNode.onaudioprocess = function(audioProcessingEvent) {
+
+    let inputBuffer = audioProcessingEvent.inputBuffer;
+    let outputBuffer = audioProcessingEvent.outputBuffer;
+
+    for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+        let input = inputBuffer.getChannelData(channel);
+        let output = outputBuffer.getChannelData(channel);
+        for (let i = 0; i < 16384; i++) {
+            phaser += scriptNode.normfreq;
+            if (phaser >= 1.0) {
+                phaser -= 1.0;
+                last = step * Math.floor(input[i] / step + 0.5);
+            }
+            output[i] = last;
+        }
+    }
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>GainNode</h5>
+        <audio src="./media/drums.mp3" id="drumsLoop2" controls loop></audio>
+        <br>
+        <label>Gain</label>
+        <input type="range" min="0" max="1" step="0.01" value="1" id="gainSlider" />
+        <pre><code class="js">const drumsLoop2 = document.querySelector('#drumsLoop2');
+const gainSlider = document.querySelector('#gainSlider');
+
+const drumsLoop2MediaElementSource = audioContext.createMediaElementSource(drumsLoop2);
+const gainNode = audioContext.createGain();
+
+drumsLoop2MediaElementSource.connect(gainNode)
+gainNode.connect(audioContext.destination)
+
+gainSlider.oninput = function(evt){
+    gainNode.gain.value = evt.target.value
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>BiquadFilterNode</h5>
+
+        <audio src="./media/drums.mp3" id="drumsLoop3" controls loop></audio>
+        <br>
+        <label>Frequency</label>
+        <input type="range" min="0" max="22050" step="1" value="350" id="biquadFilterFrequencySlider" />
+        <label>Detune</label>
+        <input type="range" min="0" max="100" step="1" value="0" id="biquadFilterDetuneSlider" />
+        <label>Q</label>
+        <input type="range" min="0.0001" max="1000" step="0.01" value="1" id="biquadFilterQSlider" />
+        <label>Gain</label>
+        <input type="range" min="-40" max="40" step="0.01" value="0" id="biquadFilterGainSlider" />
+        <label>Type</label>
+        <select id="biquadFilterTypeSelector">
+            <option value="lowpass" selected>lowpass</option>
+            <option value="highpass">highpass</option>
+            <option value="bandpass">bandpass</option>
+            <option value="lowshelf">lowshelf</option>
+            <option value="highshelf">highshelf</option>
+            <option value="peaking">peaking</option>
+            <option value="notch">notch</option>
+            <option value="allpass">allpass</option>
+        </select>
+        <pre><code class="js">const drumsLoop3 = document.querySelector('#drumsLoop3');
+const biquadFilterFrequencySlider = document.querySelector('#biquadFilterFrequencySlider');
+const biquadFilterDetuneSlider = document.querySelector('#biquadFilterDetuneSlider');
+const biquadFilterQSlider = document.querySelector('#biquadFilterQSlider');
+const biquadFilterGainSlider = document.querySelector('#biquadFilterGainSlider');
+const biquadFilterTypeSelector = document.querySelector('#biquadFilterTypeSelector');
+
+const drumsLoop3MediaElementSource = audioContext.createMediaElementSource(drumsLoop3);
+const filterNode = audioContext.createBiquadFilter();
+
+drumsLoop3MediaElementSource.connect(filterNode)
+filterNode.connect(audioContext.destination)
+
+biquadFilterFrequencySlider.oninput = function(evt){
+    filterNode.frequency.value = evt.target.value
+}
+
+biquadFilterDetuneSlider.oninput = function(evt){
+    filterNode.detune.value = evt.target.value
+}
+
+biquadFilterQSlider.oninput = function(evt){
+    filterNode.Q.value = evt.target.value
+}
+
+biquadFilterGainSlider.oninput = function(evt){
+    filterNode.gain.value = evt.target.value
+}
+
+biquadFilterTypeSelector.onchange = function(evt){
+    filterNode.type = evt.target.value;
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>DelayNode</h5>
+        <audio src="./media/guitar-chunk.wav" id="guitar-chunk" controls></audio>
+        <label>Delay</label>
+        <input type="range" min="-0" max="5" step="0.01" value="0" id="delayNodeDelaySlider" />
+        <pre><code class="js">const guitarChunk = document.querySelector('#guitar-chunk');
+const guitarChunkMediaElementSource = audioContext.createMediaElementSource(guitarChunk);
+const delayNodeDelaySlider = document.querySelector('#delayNodeDelaySlider');
+
+const delayNode = audioContext.createDelay();
+
+guitarChunkMediaElementSource.connect(delayNode)
+guitarChunkMediaElementSource.connect(audioContext.destination)
+delayNode.connect(audioContext.destination)
+
+delayNodeDelaySlider.oninput = function(evt){
+    delayNode.delayTime.value = evt.target.value;
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>PannerNode (StereoPannerNode)</h5>
+
+        <audio src="./media/guitar-mono.mp3" id="guitar-mono" controls loop></audio>
+
+        <label>X</label>
+        <input type="range" min="-3" max="3" step="0.001" value="0" id="pannerNodeXSlider" />
+        <label>Y</label>
+        <input type="range" min="-3" max="3" step="0.001" value="0" id="pannerNodeYSlider" />
+        <label>Z</label>
+        <input type="range" min="-3" max="3" step="0.001" value="0" id="pannerNodeZSlider" />
+        <pre><code class="js">const guitarMono = document.querySelector("#guitar-mono");
+const guitarMonoMediaElementSource = audioContext.createMediaElementSource(guitarMono);
+
+const pannerNodeXSlider = document.querySelector("#pannerNodeXSlider");
+const pannerNodeYSlider = document.querySelector("#pannerNodeYSlider");
+const pannerNodeZSlider = document.querySelector("#pannerNodeZSlider");
+
+const pannerNode = audioContext.createPanner();
+
+pannerNode.panningModel = 'HRTF';
+pannerNode.distanceModel = 'inverse';
+pannerNode.refDistance = 1;
+pannerNode.maxDistance = 10000;
+pannerNode.rolloffFactor = 1;
+pannerNode.coneInnerAngle = 360;
+pannerNode.coneOuterAngle = 0;
+pannerNode.coneOuterGain = 0;
+
+let xPanner = 0, yPanner = 0, zPanner = 0;
+
+guitarMonoMediaElementSource.connect(pannerNode);
+pannerNode.connect(audioContext.destination);
+
+pannerNodeXSlider.oninput = function(evt){
+    pannerNode.setPosition(evt.target.value, yPanner, zPanner);
+}
+pannerNodeYSlider.oninput = function(evt){
+    pannerNode.setPosition(xPanner, evt.target.value, zPanner);
+}
+pannerNodeZSlider.oninput = function(evt){
+    pannerNode.setPosition(xPanner, yPanner, evt.target.value);
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>ConvolverNode</h5>
+        Dry
+        <audio src="./media/guitar-mono.mp3" controls></audio>
+        Wet
+        <audio src="./media/guitar-mono.mp3" id="guitar-mono2" controls></audio>
+        <pre><code class="js">const guitarMono2 = document.querySelector("#guitar-mono2");
+const guitarMono2MediaElementSource = audioContext.createMediaElementSource(guitarMono2);
+const convolverNode = audioContext.createConvolver();
+const impulseURL = './media/Scala-Milan-Opera-Hall.wav';
+
+loadSample(impulseURL).then(function(buffer){
+    convolverNode.buffer = buffer;
+}, function(err){console.log(err)});
+
+guitarMono2MediaElementSource.connect(convolverNode);
+convolverNode.connect(audioContext.destination);
+</code></pre>
+    </section>
+
+    <section>
+        <h5>AnalyserNode</h5>
+
+        <audio src="./media/guitar-mono.mp3" id="guitar-mono3" controls loop></audio>
+
+        <canvas id="canvasContext"></canvas>
+        <pre><code class="js">const guitarMono3 = document.querySelector("#guitar-mono3");
+const canvas = document.querySelector("#canvasContext");
+const canvasContext = canvas.getContext("2d");
+const guitarMono3MediaElementSource = audioContext.createMediaElementSource(guitarMono3);
+const width=300;
+const height=255;
+let drawVisual;
+
+const analyserNode = audioContext.createAnalyser();
+
+analyserNode.fftSize = 128;
+let bufferLength = analyserNode.frequencyBinCount;
+let dataArray = new Uint8Array(bufferLength);
+canvasContext.clearRect(0, 0, width, height);
+
+guitarMono3MediaElementSource.connect(analyserNode);
+analyserNode.connect(audioContext.destination);
+
+function draw() {
+  drawVisual = requestAnimationFrame(draw);
+  analyserNode.getByteFrequencyData(dataArray);
+
+  canvasContext.fillStyle = 'rgb(0, 0, 0)';
+  canvasContext.fillRect(0, 0, width, height);
+
+  var barWidth = width / bufferLength;
+  var barHeight;
+  var x = 0;
+
+  for(var i = 0; i < bufferLength; i++) {
+    barHeight = dataArray[i];
+
+    canvasContext.fillStyle = 'rgb(' + barHeight + ','+ (255-barHeight) +','+ (255-barHeight) +')';
+    canvasContext.fillRect(x,height-barHeight,barWidth,barHeight);
+
+    x += barWidth + 1;
+}
+};
+draw();</code></pre>
+    </section>
+
+    <section>
+        <h5>ChannelSplitterNode / ChannelMergerNode</h5>
+        <audio src="./media/guitar.mp3" id="guitarRiff1" controls loop></audio>
+
+        <label>Left Gain</label>
+        <input type="range" min="0" max="1" step="0.01" value="1" id="leftGainSlider" />
+        <label>Right Gain</label>
+        <input type="range" min="0" max="1" step="0.01" value="1" id="rightGainSlider" />
+        <pre><code class="js">const guitarRiff1 = document.querySelector("#guitarRiff1");
+const leftGainSlider = document.querySelector("#leftGainSlider");
+const rightGainSlider = document.querySelector("#rightGainSlider");
+
+const guitarRiff1MediaElementSource = audioContext.createMediaElementSource(guitarRiff1);
+
+const channelSplitterNode = audioContext.createChannelSplitter(2)
+const channelMergerNode = audioContext.createChannelMerger(2)
+const gainLNode = audioContext.createGain();
+const gainRNode = audioContext.createGain();
+
+guitarRiff1MediaElementSource.connect(channelSplitterNode)
+channelSplitterNode.connect(gainLNode, 0);
+channelSplitterNode.connect(gainRNode, 1);
+gainLNode.connect(channelMergerNode, 0, 0)
+gainRNode.connect(channelMergerNode, 0, 1)
+channelMergerNode.connect(audioContext.destination)
+
+leftGainSlider.oninput = function(evt){
+    gainLNode.gain.value = evt.target.value
+}
+
+rightGainSlider.oninput = function(evt){
+    gainRNode.gain.value = evt.target.value
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>DynamicsCompressorNode</h5>
+        <audio src="./media/guitar-mono.mp3" id="guitar-compressor" controls loops></audio>
+
+        <label>Threshold</label>
+        <input type="range" min="-100" max="0" step="0.01" value="-24" id="thresholdCompressorSlider" />
+
+        <label>Knee</label>
+        <input type="range" min="0" max="40" step="0.01" value="30" id="kneeCompressorSlider" />
+
+        <label>Ratio</label>
+        <input type="range" min="1" max="20" step="0.01" value="12" id="ratioCompressorSlider" />
+
+        <label>Reduction</label>
+        <input type="range" min="-20" max="0" step="0.01" value="0" id="reductionCompressorSlider" />
+
+        <label>Attack</label>
+        <input type="range" min="0" max="1" step="0.001" value="0.003" id="attackCompressorSlider" />
+
+        <label>Release</label>
+        <input type="range" min="0" max="1" step="0.001" value="0.25" id="releaseCompressorSlider" />
+        <pre><code class="js">const guitarCompressor = document.querySelector("#guitar-compressor");
+const guitarCompressorMediaElementSource = audioContext.createMediaElementSource(guitarCompressor);
+const dynamicCompressorNode = audioContext.createDynamicsCompressor();
+
+const thresholdCompressorSlider = document.querySelector("#thresholdCompressorSlider");
+const kneeCompressorSlider = document.querySelector("#kneeCompressorSlider");
+const ratioCompressorSlider = document.querySelector("#ratioCompressorSlider");
+const reductionCompressorSlider = document.querySelector("#reductionCompressorSlider");
+const attackCompressorSlider = document.querySelector("#attackCompressorSlider");
+const releaseCompressorSlider = document.querySelector("#releaseCompressorSlider");
+
+guitarCompressorMediaElementSource.connect(dynamicCompressorNode);
+dynamicCompressorNode.connect(audioContext.destination);
+
+thresholdCompressorSlider.oninput = function(evt){
+    dynamicCompressorNode.threshold.value = evt.target.value
+}
+kneeCompressorSlider.oninput = function(evt){
+    dynamicCompressorNode.knee.value = evt.target.value
+}
+ratioCompressorSlider.oninput = function(evt){
+    dynamicCompressorNode.ratio.value = evt.target.value
+}
+reductionCompressorSlider.oninput = function(evt){
+    dynamicCompressorNode.reduction.value = evt.target.value
+}
+attackCompressorSlider.oninput = function(evt){
+    dynamicCompressorNode.attack.value = evt.target.value
+}
+releaseCompressorSlider.oninput = function(evt){
+    dynamicCompressorNode.release.value = evt.target.value
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>WaveShaperNode</h5>
+
+        <audio src="./media/drums.mp3" id="drumsLoop4" controls loop></audio>
+
+        <label>Amount</label>
+        <input type="range" min="0" max="100" step="1" value="50" id="amountDistortionSlider" />
+        <pre><code class="js">const drumsLoop4 = document.querySelector("#drumsLoop4");
+const amountDistortionSlider = document.querySelector('#amountDistortionSlider');
+const drumsLoop4MediaElementSource = audioContext.createMediaElementSource(drumsLoop4);
+const distortion = audioContext.createWaveShaper()
+
+function makeDistortionCurve(amount) {
+  var k = typeof amount === 'number' ? amount : 50,
+  n_samples = 44100,
+  curve = new Float32Array(n_samples),
+  deg = Math.PI / 180,
+  i = 0,
+  x;
+  for ( ; i < n_samples; ++i ) {
+    x = i * 2 / n_samples - 1;
+    curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+}
+return curve;
+};
+
+
+distortion.curve = makeDistortionCurve(0);
+distortion.oversample = '4x';
+
+drumsLoop4MediaElementSource.connect(distortion);
+distortion.connect(audioContext.destination)
+
+amountDistortionSlider.oninput = function(evt){
+    distortion.curve = makeDistortionCurve(parseInt(evt.target.value));
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>OscillatorNode</h5>
+
+        <label>Frequency</label>
+        <input type="range" min="0" max="1760" step="1" value="440" id="frequencyOscillatorSlider" />
+        <button id="startOscillator">Start</button>
+        <button id="stopOscillator">Stop</button>
+
+        <pre><code class="js">const frequencyOscillatorSlider = document.querySelector('#frequencyOscillatorSlider');
+const startOscillator = document.querySelector('#startOscillator');
+const stopOscillator = document.querySelector('#stopOscillator');
+
+let oscillator;
+
+stopOscillator.onclick = function(evt){
+    oscillator.stop();
+}
+startOscillator.onclick = function(evt){
+    oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 440;
+    oscillator.connect(audioContext.destination)
+    oscillator.start();
+}
+frequencyOscillatorSlider.oninput = function(evt){
+    oscillator.frequency.value = evt.target.value;
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>AudioWorkerNode</h5>
+        <blockquote>Not Implemented Yet. Stay tuned</blockquote>
+    </section>
+
+    <section>
+        <h4>Other interfaces</h4>
+        <h5>AudioBuffer</h5>
+        <blockquote>Audio buffer: non-interleaved IEEE 32-bit linear PCM with a nominal range of -1 -> +1</blockquote>
+        <ul>
+            <li>used in ConvolverNode</li>
+            <li>used in AudioProcessingEvent (ScriptProcessorNode)</li>
+            <li>used in AudioBufferSourceNode</li>
+        </ul>
+    </section>
+
+    <section>
+        <h5>Used with AudioWorkerNode</h5>
+        <ul>
+            <li>AudioWorker : main-thread representation of a worker "thread" that supports processing of audio in JavaScript. AudioWorker creates instances of AudioWorkerNode, which is the main-thread representation of an individual node processed by that AudioWorker</li>
+            <li>AudioWorkerGlobalScope</li>
+            <li>AudioWorkerNodeProcessor</li>
+            <li>AudioProcessEvent</li>
+        </ul>
+            </section>
+
+    <section>
+        <h5>Used with ScriptProcessorNode</h5>
+        <ul><li>AudioProcessingEvent</li></ul>
+    </section>
+
+    <section>
+        <h5>AudioParam</h5>
+        <ul>
+            <li>controls an individual aspect of an AudioNode's functioning, such as volume</li>
+            <li>can be a-rate or k-rate</li>
+            <li>methods
+                <ul>
+                    <li>setValueAtTime() - SetValue</li>
+                    <li>linearRampToValueAtTime() - LinearRampToValue</li>
+                    <li>exponentialRampToValueAtTime() - ExponentialRampToValue</li>
+                    <li>setTargetAtTime() - SetTarget</li>
+                    <li>setValueCurveAtTime() - SetValueCurve</li>
+                </ul>
+            </li>
+        </ul>
+
+        <label>attack</label>
+        <input type="range" min="0" max="1" step="0.001" value="0.02" id="attackADSR" />
+        <label>decay</label>
+        <input type="range" min="0" max="1" step="0.001" value="0.02" id="decayADSR" />
+        <label>sustain</label>
+        <input type="range" min="0" max="3" step="0.001" value="2" id="sustainADSR" />
+        <label>release</label>
+        <input type="range" min="0" max="3" step="0.001" value="1" id="releaseADSR" />
+
+        <button id="startADSROscillator">Start</button>
+        <button id="stopADSROscillator">Stop</button>
+        <pre><code class="js">const attackADSR = document.querySelector('#attackADSR');
+const decayADSR = document.querySelector('#decayADSR');
+const sustainADSR = document.querySelector('#sustainADSR');
+const releaseADSR = document.querySelector('#releaseADSR');
+
+const startADSROscillator = document.querySelector('#startADSROscillator');
+const stopADSROscillator = document.querySelector('#stopADSROscillator');
+
+const adsrNode = audioContext.createGain();
+let adsrOscillator;
+
+
+adsrOscillator = audioContext.createOscillator();
+adsrOscillator.type = 'sine';
+adsrOscillator.frequency.value = 440;
+adsrNode.gain.value = 0;
+
+adsrOscillator.connect(adsrNode);
+adsrNode.connect(audioContext.destination);
+adsrOscillator.start(0);
+
+stopADSROscillator.onclick = function(evt){
+    // adsrOscillator.stop();
+}
+startADSROscillator.onclick = function(evt) {
+    const attackTime = parseFloat(attackADSR.value);
+    const releaseTime = parseFloat(releaseADSR.value);
+    const decayTime = parseFloat(decayADSR.value);
+    const sustainTime = parseFloat(sustainADSR.value);
+    const now = audioContext.currentTime;
+
+    adsrNode.gain.cancelScheduledValues(now);
+    adsrNode.gain.setValueAtTime(adsrNode.gain.value, now);
+    adsrNode.gain.linearRampToValueAtTime(0.7, now + attackTime);
+    adsrNode.gain.linearRampToValueAtTime(0.4, now + attackTime + decayTime);
+    adsrNode.gain.linearRampToValueAtTime(0.4, now + attackTime + decayTime + sustainTime);
+    adsrNode.gain.exponentialRampToValueAtTime(0.00001, now + attackTime + decayTime + sustainTime + releaseTime);
+}</code></pre>
+    </section>
+
+    <section>
+        <h5>AudioListener</h5>
+        <ul>
+            <li>
+                used in AudioContext listener that represents the position and orientation of the the listener of the audio scene.
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>
+            Web Audio Conference "WAC 2015"
+        </h2>
+        <div>Ircam & Mozilla, January 26-28, 2015, Paris - France</div>
+        <blockquote>
+            WAC was the first international conference dedicated to web audio technologies and applications.
+            <br>
+            The conference gathered web R&D developers, audio processing scientists, application designers and people involved in web standards.
+            <br>
+            The conference addressed research, development, design and standards concerned with emerging audio-related web technologies such as Web Audio API, Web RTC, WebSockets and JavaScript.
+        </blockquote>
+        <ul>
+            <li>Web Audio Papers</li>
+            <li>Web Audio Talks</li>
+            <li>Web Audio Demo/Poster</li>
+            <li>Web Audio Gigs</li>
+        </ul>
+        <blockquote>
+            <a href="http://wac.ircam.fr/program.html">Program and papers</a>
+        </blockquote>
+        <p>
+        The program gives a good insight of current "hot topics" and what is missing so far in Web Audio:
+        </p>
+        <ul>
+            <li>How to port or reuse existing code with the Web Audio API: Flash, CSound, PNaCl, Emscripten</li>
+            <li>"Usual audio computer fields" in native JavaScript: eg. Music Information Retrieval - Meyda library</li>
+            <li>Tools for developers: eg. Web Audio tool in Firefox</li>
+            <li>Audio UI: waves.ui, P5.js, Repovizz</li>
+            <li>Audio Engine/Framework: waves.audio, Tones.JS</li>
+            <li>Usual sound applications: MT5 (DAW), Tanguy (Synth),  ...</li>
+            <li>Sound Synthesis, processing (binaural)</li>
+            <li>Applications: Telemeta, Noteflight, Hyperaudio, Lissajous ...</li>
+        </ul>
+        <p>And a plenary session of the W3C Audio Working Group.</p>
+    </section>
+    <section>
+        <h2>Ircam Web Audio Softwares</h2>
+
+        <h3>A Library</h3>
+
+        Developed by Norbert Schnell, Victor Saiz, Benjamin Matuszewski, Samuel Goldszmidt, Renaud Vincent, Karim Barkati.
+
+        <blockquote>Goal 1: a library for common audio developer tasks <a href="http://wavesjs.github.io/">waves.js</a></blockquote>
+        <ul>
+            <li><h4>UI</h4> (<a href="http://ircam-rnd.github.io/wac-slides">WAC waves.ui</a>)
+                <ul>
+                    <li>
+                        Waveform - Display
+                        <br>
+                        <img src="./media/img/waveform.png" />
+                    </li>
+                    <li>
+                        Markers - Display and Edit
+                        <br>
+                        <img src="./media/img/markers.png" />
+                    </li>
+                    <li>
+                        Segments - Display and Edit
+                        <br>
+                        <img src="./media/img/segments.png" />
+                    </li>
+                    <li>
+                        Break Point Functions (aka BPF) - Display and Edit
+                        <br>
+                        <img src="./media/img/breakpoint.png" />
+                    </li>
+                    <li>
+                        Cursor
+                        <br>
+                    </li>
+                    <li>
+                        Zoom/Move
+                        <br>
+                    </li>
+                </ul>
+                Some examples use cases
+                <ul>
+                    <li><a href="http://wave.ircam.fr/demo/projects/blocs-gigognes/">Blocs Gigognes Philippe Leroux</a></li>
+                    <li><a href="http://wave.ircam.fr/demo/projects/webern-opus-27/">Opus 27 Anton Webern</a></li>
+                    <li><a href="http://wave.ircam.fr/demo/luna-park/">Luna Park Georges Aperghis</a></li>
+                    <li><a href="http://wave.ircam.fr/demo/projects/bachotheque/">Bachotheque J.-S Bach</a></li>
+                    <li><a href="http://wave.ircam.fr/demo/multitrack/">Elogio de la sombra "Multitrack" Alberto Posadas</a></li>
+                </ul>
+            </li>
+            <li><h4>Audio</h4> (<a href="http://wavesjs.github.io/audio/">Documentation and demo</a>)
+                <p>Explanation of the scheduling problem on the web audio plateform: <a href="http://www.html5rocks.com/en/tutorials/audio/scheduling/?redirect_from_locale=fr">A Tale of Two Clocks - Scheduling Web Audio with Precision</a> Chris Wilson</p>
+                <ul>
+                    <li>Core: Time Engine, Audio Time Engine</li>
+                    <li>Engines, extend Audio Time Engine, in charge of playing sound: Granular Engine, Metronome, Player-engine, Segment-Engine</li>
+                    <li>Masters, in charge of controling the playback and scheduling of engines:
+                        <ul>
+                            <li>Play Control "start, pause, stop" - extends Time Engine to provide playback control of a Time Engine instance</li>
+                            <li>Scheduler (Simple-Scheduler)</li>
+                            <li>Transport (Provides synchronized scheduling of Time Engine instances)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h4><a href="https://github.com/wavesjs/lfo">LFO</a></h4>
+                    <p>
+                    LFO is a library that proposes an efficient API to formalize the processing and analysis of arbitrary data streams (eg. audio, video, sensor data).
+                    <br>
+                    By normalising the stream format in it's input and output, it allows to:</p>
+                    <ul>
+                        <li>
+                            analyse and manipulate the data through a uniform processing chain
+                        </li>
+                        <li>
+                            encapsulate common processing algorithms with a unified interface that can be shared and reused
+                        </li>
+                    </ul>
+            </li>
+        </ul>
+
+        <h3>A Framework</h3>
+
+        Developed by Norbert Schnell, Jean-Philippe Lambert, Sébastien Robaszkiewicz.
+
+        <blockquote>Goal 2: a framework <a href="https://github.com/collective-soundworks">Collective-Soundworks</a> for innovative audio and multimedia collaborative use cases.</blockquote>
+
+    </section>
+
+    <section>
+        <h2>Web Audio API vs native</h2>
+
+        <blockquote><a href="http://medias.ircam.fr/x2af2f6">Talk by Paul Adenot WAC'2015</a></blockquote>
+
+        <p>Question: What is the gap between native code and web audio api code?</p>
+
+        <p>In terms of Performance, Flexibility, Distribution, Security, "Ease of use"</p>
+
+        <blockquote>
+        <p>Native code is good at Performance, Flexibility
+        <br>
+        Web Audio API code is good a Distribution (browserify), Security (web platform is sandboxed), "Ease of use" (web audio api is easy)</p>
+        </blockquote>
+
+
+        Web Audio WITH audioworker :
+
+        Performance
+        Native : optimize CPU cache, Zero copy cross thread buffer transfer; pool allocations/reduce allocator, churn, SIMD, Lock-free/wait free programming
+
+        CPU Cache : ArrayBuffers are linear in memory, very prone to cache-related speedups/slowdowns
+        Zero copy cross-thread buffer transfer : ok in web worker
+        asm.js (subset of javascript : no garbage collection because no malloc, which cause glitch) (just 1.5x the speed of c++ code gcc -02, straightforward to port to C/C++)
+        SIMD.js (windows, linux, mac)
+        Denormals: native __MM_DENORMALS_ZERO_ON, web js: nothing
+        Lock-free/wait-free: "proposal for shared memory", but scary
+        Data types quality: could be reduced but in web audio api 32 float buffer
+
+        Latency
+        Main thread load when key pressed for instance
+        1. make sure to not have reflow, see the "timeline" in the debugger
+
+        Native audio stack: context switch (not free) (spotify + daw)
+        or better "ASIO" which bloc all, thread super high priority
+
+        Browser audio stack : 2 context switch, and audioworker will go normal priority
+
+        Ecosystem/Distribution
+        independant vendor, untrusted code
+        for "plugin" you want to dont give access to DOM, pb you need to share the audiocontext
+        solve: ES6 Proxy complete isolation of you plugin!
+
+    </section>
+
+    <section>
+        <h2>Conclusion</h2>
+
+        <p>Web Audio is not just about Web Audio API standard, as music is not only about making sound.
+        <br>
+        <b>Web Audio API</b> is one necessary tool among others which enable music on the web platform.
+        </p>
+
+        <blockquote>
+            With optmization Web Audio is just 1.5 the speed of C++ code - Paul Adenot (Mozilla, Web Audio API Editor), 1st WAC
+        </blockquote>
+
+        <p>From now <small>(well, with audioworkers)</small>, it remains only 2 technical limitations:
+        </p>
+
+        <ul>
+            <li>Latency of devices (time to play the buffer, which varies from device to device)</li>
+            <li>"Web RTC 4 ALL" <small>(iOS, where are you?)</small></li>
+        </ul>
+
+        <p>Others limitations are our imagination. The open web platform is almost mature to become a new music platform with extraordinary and for the moment underused capabilities.</p>
+
+        <h3>What is coming?</h3>
+        <ul>
+            <li>Web Midi API</li>
+            <li>AudioWorker</li>
+            <li><a href="http://webaudio.gatech.edu/">WAC2016 Georgia Tech Atlanta</a></li>
+        </ul>
+    </section>
+
+    <script type="application/javascript;version=1.7" src="./index.js"></script>
+    <script type="application/javascript;version=1.7" src="./media/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+section {
+    border-bottom: 3px solid black;
+    min-height: 100vh;
+    padding:25px;
+}
+
+
+a {
+    color: #365D95;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+
+blockquote {
+    border-left:5px solid #365D95;
+    margin-left: 0px;
+    padding-left: 40px;
+    font-style: italic;
+    font-size:1.3em;
+}
