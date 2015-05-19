@@ -120,6 +120,38 @@ http://webaudioplayground.appspot.com/
 
 # Web Audio Conference
 
+
+# Web vs. Native
+
+        Web Audio WITH audioworker :
+
+        Performance
+        Native : optimize CPU cache, Zero copy cross thread buffer transfer; pool allocations/reduce allocator, churn, SIMD, Lock-free/wait free programming
+
+        CPU Cache : ArrayBuffers are linear in memory, very prone to cache-related speedups/slowdowns
+        Zero copy cross-thread buffer transfer : ok in web worker
+        asm.js (subset of javascript : no garbage collection because no malloc, which cause glitch) (just 1.5x the speed of c++ code gcc -02, straightforward to port to C/C++)
+        SIMD.js (windows, linux, mac)
+        Denormals: native __MM_DENORMALS_ZERO_ON, web js: nothing
+        Lock-free/wait-free: "proposal for shared memory", but scary
+        Data types quality: could be reduced but in web audio api 32 float buffer
+
+        Latency
+        Main thread load when key pressed for instance
+        1. make sure to not have reflow, see the "timeline" in the debugger
+
+        Native audio stack: context switch (not free) (spotify + daw)
+        or better "ASIO" which bloc all, thread super high priority
+
+        Browser audio stack : 2 context switch, and audioworker will go normal priority
+
+        Ecosystem/Distribution
+        independant vendor, untrusted code
+        for "plugin" you want to dont give access to DOM, pb you need to share the audiocontext
+        solve: ES6 Proxy complete isolation of you plugin!
+
+For instance, in audio processing applications, denormal values usually represent a signal so quiet that it is out of the human hearing range. Because of this, a common measure to avoid denormals on processors where there would be a performance penalty is to cut the signal to zero once it reaches denormal levels
+
 * 2015 Hot topics
 * Next
 
