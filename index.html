@@ -151,7 +151,7 @@
             <li>Convolution engine</li>
             <li>Filters, Waveshaping, Oscillator</li>
             <li>AudioParameters</li>
-            <li>Time-domain and frequency analysis (for visualisation only at this time)</li>
+            <li>Time-domain and frequency analysis (for visualization only at this time)</li>
         </ul>
 
         <blockquote>
@@ -171,7 +171,19 @@
 
         <h4>AudioContext</h4>
 
-        <p>Contains the audio signal graph (connections between audio nodes), the currentTime, the factories to create AudioNodes</p>
+        <p>Contains </p>
+        <ul>
+            <li>the audio signal graph <small>(connections between AudioNodes)</small>,
+            </li>
+            <li>the factories to create AudioNodes <small>(GainNode, PannerNode ...)</small>,
+            </li>
+            <li>destination <small>(the audio ouput)</small>, </li>
+            <li>the currentTime <small>(useful to schedule things)</small>,
+            </li>
+            <li>decodeAudioData</li>
+        </ul>
+        </section>
+    <section>
         <pre><code class="js">
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 /* decodeAudioData */
@@ -203,7 +215,7 @@ const samples = Promise.all([loadSample(bassDrumURL), loadSample(snareDrumURL)])
     <section>
         <h4>AudioNodes</h4>
 
-        <h5>AudioBufferSourceNode</h5>
+        <h5>AudioBufferSourceNode <small>an AudioNode that plays an audio buffer</small></h5>
         <button id="bassDrumBt">BD</button>
         <button id="snareDrumBt">SD</button>
 <pre><code class="js">function playSample(buffer){
@@ -223,7 +235,7 @@ function onSamplesDecoded(buffers){
 }</code></pre>
 </section>
 <section>
-        <h5>MediaElementAudioSourceNode</h5>
+        <h5>MediaElementAudioSourceNode <small>an AudioNode that plays audio from and &lt;audio&gt; tag</small></h5>
         <audio src="./media/guitar.mp3" id="guitarRiff" controls loop></audio>
         <pre><code class="js">const guitarRiff = document.querySelector('#guitarRiff');
 const guitarMediaElementSource = audioContext.createMediaElementSource(guitarRiff);
@@ -233,7 +245,7 @@ guitarMediaElementSource.connect(audioContext.destination)
     </section>
 
     <section>
-        <h5>MediaStreamAudioSourceNode</h5>
+        <h5>MediaStreamAudioSourceNode <small>an AudioNode that plays an audio getUserMedia</small></h5>
         <label><input type="checkbox" id="liveAudioInputBt">Enable/Disable live audio input</label>
         <pre><code class="js">let localStream;
 const liveAudioInputBt = document.querySelector("#liveAudioInputBt");
@@ -253,7 +265,7 @@ liveAudioInputBt.onclick = function(evt){
     </section>
 
     <section>
-        <h5>MediaStreamAudioDestinationNode</h5>
+        <h5>MediaStreamAudioDestinationNode <small>an AudioNode that outputs audio stream to be used with WebRTC</small></h5>
         <label><input type="checkbox" id="liveAudioOutputBt">Enable/Disable live audio ouput</label>
         <pre><code class="js">const liveAudioOutputBt = document.querySelector("#liveAudioOutputBt");
 
@@ -279,45 +291,36 @@ liveAudioOutputBt.onclick = function(evt){
     </section>
 
     <section>
-        <h5>ScriptProcessorNode</h5>
-        <audio src="./media/drums.mp3" id="drumsLoop" controls loop></audio>
-        <pre><code class="js">const drumsLoop = document.querySelector('#drumsLoop');
+        <h5>OscillatorNode</h5>
 
-const drumsLoopMediaElementSource = audioContext.createMediaElementSource(drumsLoop);
-const scriptNode = audioContext.createScriptProcessor(16384, 1, 1);
-drumsLoopMediaElementSource.connect(scriptNode)
-scriptNode.connect(audioContext.destination)
+        <label>Frequency</label>
+        <input type="range" min="0" max="1760" step="1" value="440" id="frequencyOscillatorSlider" />
+        <button id="startOscillator">Start</button>
+        <button id="stopOscillator">Stop</button>
 
-scriptNode.bits = 8; // between 1 and 16
-scriptNode.normfreq = 0.05; // between 0.0 and 1.0
+        <pre><code class="js">const frequencyOscillatorSlider = document.querySelector('#frequencyOscillatorSlider');
+const startOscillator = document.querySelector('#startOscillator');
+const stopOscillator = document.querySelector('#stopOscillator');
 
-let step = Math.pow(1/2, scriptNode.bits);
-let phaser = 0;
-let last = 0;
+let oscillator;
 
-
-scriptNode.onaudioprocess = function(audioProcessingEvent) {
-
-    let inputBuffer = audioProcessingEvent.inputBuffer;
-    let outputBuffer = audioProcessingEvent.outputBuffer;
-
-    for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-        let input = inputBuffer.getChannelData(channel);
-        let output = outputBuffer.getChannelData(channel);
-        for (let i = 0; i < 16384; i++) {
-            phaser += scriptNode.normfreq;
-            if (phaser >= 1.0) {
-                phaser -= 1.0;
-                last = step * Math.floor(input[i] / step + 0.5);
-            }
-            output[i] = last;
-        }
-    }
+stopOscillator.onclick = function(evt){
+    oscillator.stop();
+}
+startOscillator.onclick = function(evt){
+    oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 440;
+    oscillator.connect(audioContext.destination)
+    oscillator.start();
+}
+frequencyOscillatorSlider.oninput = function(evt){
+    oscillator.frequency.value = parseFloat(evt.target.value);
 }</code></pre>
     </section>
 
     <section>
-        <h5>GainNode</h5>
+        <h5>GainNode <small>an AudioNode that changes the gain of the signal</small></h5>
         <audio src="./media/drums.mp3" id="drumsLoop2" controls loop></audio>
         <br>
         <label>Gain</label>
@@ -337,7 +340,7 @@ gainSlider.oninput = function(evt){
     </section>
 
     <section>
-        <h5>BiquadFilterNode</h5>
+        <h5>BiquadFilterNode <small>an AudioNode that filters the signal</small></h5>
 
         <audio src="./media/drums.mp3" id="drumsLoop3" controls loop></audio>
         <br>
@@ -395,7 +398,7 @@ biquadFilterTypeSelector.onchange = function(evt){
     </section>
 
     <section>
-        <h5>DelayNode</h5>
+        <h5>DelayNode <small>an AudioNode that delays the signal</small></h5>
         <audio src="./media/guitar-chunk.wav" id="guitar-chunk" controls></audio>
         <label>Delay</label>
         <input type="range" min="-0" max="5" step="0.01" value="0" id="delayNodeDelaySlider" />
@@ -415,7 +418,7 @@ delayNodeDelaySlider.oninput = function(evt){
     </section>
 
     <section>
-        <h5>PannerNode (StereoPannerNode)</h5>
+        <h5>PannerNode (StereoPannerNode) <small>an AudioNode that applies spatialization the sound</small></h5>
 
         <audio src="./media/guitar-mono.mp3" id="guitar-mono" controls loop></audio>
 
@@ -460,7 +463,7 @@ pannerNodeZSlider.oninput = function(evt){
     </section>
 
     <section>
-        <h5>ConvolverNode</h5>
+        <h5>ConvolverNode <small>an AudioNode that makes a convolution of the signal with the provided impulse response (an audio buffer)</small></h5>
         Dry
         <audio src="./media/guitar-mono.mp3" controls></audio>
         Wet
@@ -479,52 +482,6 @@ convolverNode.connect(audioContext.destination);
 </code></pre>
     </section>
 
-    <section>
-        <h5>AnalyserNode</h5>
-
-        <audio src="./media/guitar-mono.mp3" id="guitar-mono3" controls loop></audio>
-
-        <canvas id="canvasContext"></canvas>
-        <pre><code class="js">const guitarMono3 = document.querySelector("#guitar-mono3");
-const canvas = document.querySelector("#canvasContext");
-const canvasContext = canvas.getContext("2d");
-const guitarMono3MediaElementSource = audioContext.createMediaElementSource(guitarMono3);
-const width=300;
-const height=255;
-let drawVisual;
-
-const analyserNode = audioContext.createAnalyser();
-
-analyserNode.fftSize = 128;
-let bufferLength = analyserNode.frequencyBinCount;
-let dataArray = new Uint8Array(bufferLength);
-canvasContext.clearRect(0, 0, width, height);
-
-guitarMono3MediaElementSource.connect(analyserNode);
-analyserNode.connect(audioContext.destination);
-
-function draw() {
-  drawVisual = requestAnimationFrame(draw);
-  analyserNode.getByteFrequencyData(dataArray);
-
-  canvasContext.fillStyle = 'rgb(0, 0, 0)';
-  canvasContext.fillRect(0, 0, width, height);
-
-  var barWidth = width / bufferLength;
-  var barHeight;
-  var x = 0;
-
-  for(var i = 0; i < bufferLength; i++) {
-    barHeight = dataArray[i];
-
-    canvasContext.fillStyle = 'rgb(' + barHeight + ','+ (255-barHeight) +','+ (255-barHeight) +')';
-    canvasContext.fillRect(x,height-barHeight,barWidth,barHeight);
-
-    x += barWidth + 1;
-}
-};
-draw();</code></pre>
-    </section>
 
     <section>
         <h5>ChannelSplitterNode / ChannelMergerNode</h5>
@@ -655,42 +612,98 @@ amountDistortionSlider.oninput = function(evt){
     </section>
 
     <section>
-        <h5>OscillatorNode</h5>
+        <h5>ScriptProcessorNode <small>an AudioNode that allows JavaScript buffer processing, <small>deprecated, <small>broken by design</small></small></small></h5>
+        <audio src="./media/drums.mp3" id="drumsLoop" controls loop></audio>
+        <pre><code class="js">const drumsLoop = document.querySelector('#drumsLoop');
 
-        <label>Frequency</label>
-        <input type="range" min="0" max="1760" step="1" value="440" id="frequencyOscillatorSlider" />
-        <button id="startOscillator">Start</button>
-        <button id="stopOscillator">Stop</button>
+const drumsLoopMediaElementSource = audioContext.createMediaElementSource(drumsLoop);
+const scriptNode = audioContext.createScriptProcessor(16384, 1, 1);
+drumsLoopMediaElementSource.connect(scriptNode)
+scriptNode.connect(audioContext.destination)
 
-        <pre><code class="js">const frequencyOscillatorSlider = document.querySelector('#frequencyOscillatorSlider');
-const startOscillator = document.querySelector('#startOscillator');
-const stopOscillator = document.querySelector('#stopOscillator');
+scriptNode.bits = 8; // between 1 and 16
+scriptNode.normfreq = 0.05; // between 0.0 and 1.0
 
-let oscillator;
+let step = Math.pow(1/2, scriptNode.bits);
+let phaser = 0;
+let last = 0;
 
-stopOscillator.onclick = function(evt){
-    oscillator.stop();
-}
-startOscillator.onclick = function(evt){
-    oscillator = audioContext.createOscillator();
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 440;
-    oscillator.connect(audioContext.destination)
-    oscillator.start();
-}
-frequencyOscillatorSlider.oninput = function(evt){
-    oscillator.frequency.value = parseFloat(evt.target.value);
+
+scriptNode.onaudioprocess = function(audioProcessingEvent) {
+
+    let inputBuffer = audioProcessingEvent.inputBuffer;
+    let outputBuffer = audioProcessingEvent.outputBuffer;
+
+    for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+        let input = inputBuffer.getChannelData(channel);
+        let output = outputBuffer.getChannelData(channel);
+        for (let i = 0; i < 16384; i++) {
+            phaser += scriptNode.normfreq;
+            if (phaser >= 1.0) {
+                phaser -= 1.0;
+                last = step * Math.floor(input[i] / step + 0.5);
+            }
+            output[i] = last;
+        }
+    }
 }</code></pre>
     </section>
 
     <section>
-        <h5>AudioWorkerNode</h5>
+        <h5>AudioWorkerNode <small>a ScriptProcessorNode on steroïd</small></h5>
         <p>Not Implemented Yet. Stay tuned</p>
 
         <blockquote>All audio processing by AudioWorkerNodes run in the audio processing thread.
             <br>
             From the <a href="https://webaudio.github.io/web-audio-api/#the-audioworker-interface">AudioWorker in the specification</a></blockquote>
 
+    </section>
+
+<section>
+        <h5>AnalyserNode <small>an AudioNode that analyses the signal for temporal or frequencial visualization</small></h5>
+
+        <audio src="./media/guitar-mono.mp3" id="guitar-mono3" controls loop></audio>
+
+        <canvas id="canvasContext"></canvas>
+        <pre><code class="js">const guitarMono3 = document.querySelector("#guitar-mono3");
+const canvas = document.querySelector("#canvasContext");
+const canvasContext = canvas.getContext("2d");
+const guitarMono3MediaElementSource = audioContext.createMediaElementSource(guitarMono3);
+const width=300;
+const height=255;
+let drawVisual;
+
+const analyserNode = audioContext.createAnalyser();
+
+analyserNode.fftSize = 128;
+let bufferLength = analyserNode.frequencyBinCount;
+let dataArray = new Uint8Array(bufferLength);
+canvasContext.clearRect(0, 0, width, height);
+
+guitarMono3MediaElementSource.connect(analyserNode);
+analyserNode.connect(audioContext.destination);
+
+function draw() {
+  drawVisual = requestAnimationFrame(draw);
+  analyserNode.getByteFrequencyData(dataArray);
+
+  canvasContext.fillStyle = 'rgb(0, 0, 0)';
+  canvasContext.fillRect(0, 0, width, height);
+
+  var barWidth = width / bufferLength;
+  var barHeight;
+  var x = 0;
+
+  for(var i = 0; i < bufferLength; i++) {
+    barHeight = dataArray[i];
+
+    canvasContext.fillStyle = 'rgb(' + barHeight + ','+ (255-barHeight) +','+ (255-barHeight) +')';
+    canvasContext.fillRect(x,height-barHeight,barWidth,barHeight);
+
+    x += barWidth + 1;
+}
+};
+draw();</code></pre>
     </section>
 
     <section>
@@ -705,11 +718,9 @@ frequencyOscillatorSlider.oninput = function(evt){
             <li>AudioBufferSourceNode</li>
         </ul>
         <h5>AudioListener</h5>
-        <ul>
-            <li>
-                used in AudioContext listener that represents the position and orientation of the the listener of the audio scene.
-            </li>
-        </ul>
+        <p>
+        Used in AudioContext listener that represents the position and orientation of the listener of the audio scene.
+        </p>
     </section>
     <section>
         <h5>AudioParam</h5>
@@ -790,6 +801,7 @@ startADSROscillator.onclick = function(evt) {
             <li>Web Audio Talks</li>
             <li>Web Audio Demo/Poster</li>
             <li>Web Audio Gigs</li>
+            <li>Plenary session of the W3C Audio Working Group</li>
         </ul>
         <blockquote>
             <a href="http://wac.ircam.fr/program.html">Program and papers</a>
@@ -803,11 +815,9 @@ startADSROscillator.onclick = function(evt) {
             <li>Tools for developers: eg. Web Audio tool in Firefox</li>
             <li>Audio UI: waves.ui, P5.js, Repovizz</li>
             <li>Audio Engine/Framework: waves.audio, Tones.JS</li>
-            <li>Usual sound applications: MT5 (DAW), Tanguy (Synth),  ...</li>
             <li>Sound Synthesis, processing (binaural)</li>
-            <li>Applications: Telemeta, Noteflight, Hyperaudio, Lissajous ...</li>
+            <li>Applications: MT5 (DAW), Tanguy (Synth), Telemeta, Noteflight, Hyperaudio, Lissajous ...</li>
         </ul>
-        <p>And a plenary session of the W3C Audio Working Group.</p>
     </section>
 
 <section>
