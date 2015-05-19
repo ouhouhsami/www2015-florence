@@ -19,7 +19,7 @@
         <h1>What is Web Audio?</h1>
         <h5>W3C Track: Web Audio</h5>
         <div>May 20, 2015 - Florence, Italy</div>
-        <div>Samuel Goldszmidt (<a href="https://twitter.com/ouhouhsami">@ouhouhsami</a>) - <a href="http://www.ircam.fr">Ircam</a></div>
+        <div>Samuel Goldszmidt (<a href="https://twitter.com/ouhouhsami">@ouhouhsami</a>) & Norbert Schnell (<a href="https://twitter.com/norbertschnell">@norbertschnell</a>) - <a href="http://www.ircam.fr">Ircam</a></div>
 
     </section>
 
@@ -28,7 +28,7 @@
         <h2>Introduction</h2>
 
         <div>
-            <blockquote>$ whoami: <b>Web developper</b> at <b>Ircam</b></blockquote>
+            <blockquote>$ whoami: <b>Web developper</b> at <b>Ircam</b><br>$ whoishe: <b>Sound and interaction designer</b> at <b>Ircam</b></blockquote>
 
             <h5>Institut de Recherche et de Coordination Acoustique/Musique</h5>
             <img src="./media/img/ircam.png" alt="Ircam building" height="200px" />
@@ -68,7 +68,7 @@
         <div>
 
             <blockquote>
-                - What brought Norbert Schnell and I there?
+                - How did we get there?
                 <br>
                 - Obviously, audio is one of Ircam's key research field.
             </blockquote>
@@ -716,11 +716,11 @@ frequencyOscillatorSlider.oninput = function(evt){
             <li>can be a-rate <small>value for each sample-frame of the block</small> or k-rate <small>value used for the entire block</small></li>
             <li>methods
                 <ul>
-                    <li>setValueAtTime() - SetValue</li>
-                    <li>linearRampToValueAtTime() - LinearRampToValue</li>
-                    <li>exponentialRampToValueAtTime() - ExponentialRampToValue</li>
-                    <li>setTargetAtTime() - SetTarget</li>
-                    <li>setValueCurveAtTime() - SetValueCurve</li>
+                    <li>setValueAtTime()</li>
+                    <li>linearRampToValueAtTime()</li>
+                    <li>exponentialRampToValueAtTime()
+                    <li>setTargetAtTime()</li>
+                    <li>setValueCurveAtTime()</li>
                 </ul>
             </li>
         </ul>
@@ -836,7 +836,7 @@ startADSROscillator.onclick = function(evt) {
                     Use <a href="http://asmjs.org/">asm.js</a> as it doesn't produce temporary objects to be garbage collected.
                 </li>
                 <li>
-                    Use <a href="https://hacks.mozilla.org/2014/10/introducing-simd-js/">SIMD.js</a>. SIMD (Single Instruction Multiple Data) allows to perform operations on multiple data elements together which is particularly interesting in term of performance in the case of audio buffer data processing.
+                    Use <a href="https://hacks.mozilla.org/2014/10/introducing-simd-js/">SIMD.js</a>. SIMD (Single Instruction Multiple Data) allows to perform operations on multiple data elements together which is particularly interesting in terms of performance in the case of audio buffer data processing.
                 </li>
             </ol>
         <p>
@@ -853,21 +853,27 @@ startADSROscillator.onclick = function(evt) {
 
         <p>Developed by Norbert Schnell, Victor Saiz, Benjamin Matuszewski, Samuel Goldszmidt, Renaud Vincent, Karim Barkati.
             <br>
-            WAVE project, funded by National French Agency
+            WAVE project, funded by National French Agency with Ircam / Eurecom / Universal / Vi-live
         </p>
 
-        <blockquote>Goal 1: a library to build audio application <a href="http://wavesjs.github.io/">waves.js</a></blockquote>
+        <blockquote>Goal: a library to easily build audio applications <a href="http://wavesjs.github.io/">waves.js</a></blockquote>
 
         <ul>
             <li>UI: display temporal representations</li>
-            <li>Audio: engine and schedule</li>
+            <li>Audio: engine and scheduler</li>
             <li>LFO: audio processing</li>
         </ul>
+
+        <p>A work in progress, based on use cases.</p>
     </section>
     <section>
 
         <h4>waves.js - UI - for temporal representations</h4>
-        <p><a href="http://ircam-rnd.github.io/wac-slides">WAC waves.ui</a> <small>(Chrome only)</small></p>
+        <p>
+            Presentation: <a href="http://ircam-rnd.github.io/wac-slides">WAC waves.ui</a> <small>(Chrome only)</small>
+            <br>
+            Documentation: <a href="http://wavesjs.github.io/">wavesjs.github.io</a>
+        </p>
                 <ul>
                     <li>
                         Waveform - Display
@@ -905,8 +911,9 @@ startADSROscillator.onclick = function(evt) {
     </section>
     <section>
             <h4>waves.js - Audio</h4>
-            <p><a href="http://wavesjs.github.io/audio/">Documentation and demo</a></p>
-                <p>Explanation of the scheduling problem on the web audio plateform: <a href="http://www.html5rocks.com/en/tutorials/audio/scheduling/?redirect_from_locale=fr">A Tale of Two Clocks - Scheduling Web Audio with Precision</a> Chris Wilson</p>
+            <p><a href="http://wavesjs.github.io/audio/">Documentation and demo</a>
+                <br>Explanation of scheduling problem on the web audio plateform: <a href="http://www.html5rocks.com/en/tutorials/audio/scheduling/?redirect_from_locale=fr">A Tale of Two Clocks - Scheduling Web Audio with Precision</a> Chris Wilson</p>
+                <h5>audio components</h5>
                 <ul>
                     <li>Core: Time Engine, Audio Time Engine</li>
                     <li>Engines, extend Audio Time Engine, in charge of playing sound: Granular Engine, Metronome, Player-engine, Segment-Engine</li>
@@ -933,7 +940,7 @@ startADSROscillator.onclick = function(evt) {
                             encapsulate common processing algorithms with a unified interface that can be shared and reused
                         </li>
                     </ul>
-
+                <img src="./media/img/lfo.png" />
 
     </section>
     <section>
@@ -941,7 +948,7 @@ startADSROscillator.onclick = function(evt) {
 
         Developed by Norbert Schnell, Sébastien Robaszkiewicz, Jean-Philippe Lambert.
 
-        <blockquote>Goal 2: a framework <a href="https://github.com/collective-soundworks">Collective-Soundworks</a> for innovative audio and multimedia collaborative use cases.</blockquote>
+        <blockquote>Goal: a framework <a href="https://github.com/collective-soundworks">Collective-Soundworks</a> for innovative audio and multimedia collaborative use cases.</blockquote>
 
     </section>
 
