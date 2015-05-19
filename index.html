@@ -17,6 +17,8 @@
     <section>
 
         <h1>What is Web Audio?</h1>
+        <p>followed by</p>
+        <h1>Collective Sound Check – Web Audio in Action</h1>
         <h5>W3C Track: Web Audio</h5>
         <div>May 20, 2015 - Florence, Italy</div>
         <div>Samuel Goldszmidt (<a href="https://twitter.com/ouhouhsami">@ouhouhsami</a>) & Norbert Schnell (<a href="https://twitter.com/norbertschnell">@norbertschnell</a>) - <a href="http://www.ircam.fr">Ircam</a></div>
@@ -44,7 +46,7 @@
                     Goal: a place that gathers musicians, scientists and engineers for their mutual benefit
                     <ul>
                         <li>renewing contemporary music expression through Science and Technology</li>
-                        <li>music creation as an singular and challenging research object</li>
+                        <li>music creation as a singular and challenging research object</li>
                     </ul>
                 </li>
             </ul>
@@ -76,7 +78,7 @@
             <div>
                 The browser <small>(well, one which respects standards)</small> is a unique platform shared by more than 3 billion users.
                 <br>
-                So, if we can deliver Ircam's computer music and interaction knowledge in the web platform, we will reach new fields of research, experiments and feedback.
+                So, if we can deliver Ircam's computer music and interaction knowledge, algorithms, technologies and softwares in the web platform, we will reach new fields of research, experiments and feedback.
             </div>
 
             <ul>
@@ -712,17 +714,12 @@ frequencyOscillatorSlider.oninput = function(evt){
     <section>
         <h5>AudioParam</h5>
         <ul>
-            <li>controls an individual aspect of an AudioNode's functioning, such as volume</li>
-            <li>can be a-rate <small>value for each sample-frame of the block</small> or k-rate <small>value used for the entire block</small></li>
-            <li>methods
-                <ul>
-                    <li>setValueAtTime()</li>
-                    <li>linearRampToValueAtTime()</li>
-                    <li>exponentialRampToValueAtTime()
-                    <li>setTargetAtTime()</li>
-                    <li>setValueCurveAtTime()</li>
-                </ul>
+            <li>Controls an individual aspect of an AudioNode's functioning, such as volume</li>
+            <li>Can be a-rate <small>value for each sample-frame of the block</small> or k-rate <small>value used for the entire block</small></li>
+            <li>
+                Methods: setValueAtTime(), linearRampToValueAtTime(), exponentialRampToValueAtTime(), setTargetAtTime(), setValueCurveAtTime()
             </li>
+            <li>Can be connected to an AudioNode: AudioNode.connect(AudioParam) <small>(until now we saw AudioNode.connect(AudioNode))</small></li>
         </ul>
 
         <label>attack</label>
